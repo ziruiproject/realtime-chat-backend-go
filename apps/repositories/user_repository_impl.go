@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"log"
 
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/helpers"
 
@@ -12,16 +13,21 @@ import (
 type UserRepositoryImpl struct {
 }
 
+func NewUserRepository() UserRepository {
+	return &UserRepositoryImpl{}
+}
+
 func (repository *UserRepositoryImpl) GetAll(ctx context.Context, tx *sql.Tx) []models.User {
-	var SQL string = "SELECT id, name, email, profile FROM users"
+	log.Println("Masuk Repository")
+	var SQL string = "SELECT id, name, email, profile_img FROM users"
 	rows, err := tx.QueryContext(ctx, SQL)
 	helpers.ErrorWithLog("Failed executing query", err)
-	defer helpers.ErrorCloseDefer(rows)
+	defer helpers.ErrorCloseRowsDefer(rows)
 
 	var users []models.User
 	for rows.Next() {
 		user := models.User{}
-		err := rows.Scan(user.ID, user.Name, user.Email, user.Profile)
+		err := rows.Scan(&user.Id, &user.Name, &user.Email, &user.Profile)
 		helpers.ErrorWithLog("Failed scanning query", err)
 
 		users = append(users, user)
