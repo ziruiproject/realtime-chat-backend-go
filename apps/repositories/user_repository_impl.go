@@ -16,7 +16,7 @@ func (repository *UserRepositoryImpl) GetAll(ctx context.Context, tx *sql.Tx) []
 	var SQL string = "SELECT id, name, email, profile FROM users"
 	rows, err := tx.QueryContext(ctx, SQL)
 	helpers.ErrorWithLog("Failed executing query", err)
-	defer helpers.ErrorDefer(rows)
+	defer helpers.ErrorCloseDefer(rows)
 
 	var users []models.User
 	for rows.Next() {
