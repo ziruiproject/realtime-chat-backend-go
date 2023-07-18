@@ -1,0 +1,10 @@
+{
+    "go.useLanguageServer": true,
+    "go.gopath": "C:\\Users\\MyBook Z Series\\Documents\\DEVELOPMENT\\GOLANG",
+    "go.lintTool": "golint",
+    "go.lintOnSave": "file",
+    "gopls": {
+
+    },
+    "go.formatTool": "gofmt"
+}
