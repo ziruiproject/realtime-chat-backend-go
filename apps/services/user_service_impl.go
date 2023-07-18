@@ -25,7 +25,6 @@ func NewUserService(userRepository repositories.UserRepository, db *sql.DB) User
 }
 
 func (service *UserServiceImpl) GetAll(ctx context.Context) []web.UserResponse {
-	log.Println(service.DB)
 	log.Println("Masuk Service")
 	tx, err := service.DB.Begin()
 	helpers.ErrorWithLog("Failed to make the transaction: ", err)
