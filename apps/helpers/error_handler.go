@@ -11,7 +11,7 @@ func ErrorWithLog(msg string, err error) {
 	}
 }
 
-func ErrorDefer(rows *sql.Rows) {
+func ErrorCloseDefer(rows *sql.Rows) {
 	err := rows.Close()
 	ErrorWithLog("Failed closing connection", err)
 }
