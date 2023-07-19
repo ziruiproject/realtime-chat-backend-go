@@ -31,7 +31,6 @@
     "data" : {}
 }
 ```
-
 # Users
 ### Get All Users `GET /users`
 #### Success
@@ -168,7 +167,7 @@
   "data": {}
 }
 ```
-## Delete User `PATCH /users/id`
+## Delete User `DELETE /users/id`
 #### Success
 ```json
 {
@@ -188,11 +187,11 @@
 ```
 # Auth
 ## Login `POST /auth/login`
-# Success
+#### Success
 ```json
 {
     "status" : "OK",
-    "message" : "User retrieved successfully",
+    "message" : "Login successful",
     "code" : 200,
     "data" : {
         "id" : "832a5b22-77f5-4c03-8cb4-318fd8192b07",
@@ -204,7 +203,31 @@
         "updated_at" : 1689721714
     }
 }
+``` 
+#### Invalid Credentials Error
+```json
+{
+  "status": "error",
+  "error_type": "client",
+  "message": "Invalid email or password. Please try again.",
+  "code": 401,
+  "data": {}
+}
 ```
+## Logout `POST /auth/logout`
+#### Success
+```json
+{
+    "status" : "OK",
+    "message" : "Logout successful",
+    "code" : 200,
+    "data" : {}
+}
+```
+# Chat
+## Get Chats  `/chats/id`
+
+
 
 
 
