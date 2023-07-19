@@ -186,5 +186,25 @@
     }
 }
 ```
+# Auth
+## Login `POST /auth/login`
+# Success
+```json
+{
+    "status" : "OK",
+    "message" : "User retrieved successfully",
+    "code" : 200,
+    "data" : {
+        "id" : "832a5b22-77f5-4c03-8cb4-318fd8192b07",
+        "name" : "Yudha Prawira",
+        "username" : "@zirui.dev",
+        "email" : "example@gmail.com",
+        "profile_img" : "/path/to/img.png",
+        "create_at" : 1689721714,
+        "updated_at" : 1689721714
+    }
+}
+```
+
 
 
