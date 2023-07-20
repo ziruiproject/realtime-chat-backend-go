@@ -53,3 +53,11 @@ func (repository *UserRepositoryImpl) GetById(ctx context.Context, tx *sql.Tx, i
 	helpers.ErrorWithLog("Failed scanning query", err)
 	return user, nil
 }
+
+func (repository *UserRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, user models.User) models.User {
+	var SQL string = "INISERT INTO users(id, name, email, password, profile_img) values (?, ?, ?, ?, ?)"
+	_, err := tx.ExecContext(ctx, SQL, user.Id, user.Name, user.Email, user.Password, user.Profile)
+	helpers.ErrorWithLog("Failed executing query", err)
+
+	return user
+}
