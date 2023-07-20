@@ -58,7 +58,7 @@
                 "profile_img" : "/path/to/img.png",
                 "create_at" : 1689721714,
                 "updated_at" : 1689721714
-            },
+            }
         ]
     }
 }
@@ -141,7 +141,7 @@
         ],
         "email" : [
             "Required",
-            "Must be a valid email",
+            "Must be a valid email"
         ]
     }
   }
