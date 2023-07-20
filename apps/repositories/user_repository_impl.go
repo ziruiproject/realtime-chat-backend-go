@@ -61,3 +61,7 @@ func (repository *UserRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, user
 
 	return user
 }
+
+func (repository *UserRepositoryImpl) Update(ctx context.Context, tx *sql.DB, user models.User) models.User {
+	var SQL string = "UPDATE users SET username "
+}
