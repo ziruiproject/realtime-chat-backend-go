@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/helpers"
@@ -36,22 +37,19 @@ func (repository *UserRepositoryImpl) GetAll(ctx context.Context, tx *sql.Tx) []
 	return users
 }
 
-//
-//func (repo *UserRepositoryImpl) GetUsers() (*models.User, error) {
-//	query := `SELECT id, name, email, profile FROM users`
-//	row := repo.Db.QueryRow(query)
-//
-//	user := &models.User{}
-//	err := row.Scan(&user.ID, &user.Name, &user.Profile)
-//
-//	if err != nil {
-//		if err == sql.ErrNoRows {
-//			return nil, errors.New("user not found")
-//		}
-//		return nil, errors.Wrap(err, "failed to fetch user by ID")
-//	}
-//
-//	return user, nil
-//}
-//
-//}
+func (repository *UserRepositoryImpl) GetById(ctx context.Context, tx *sql.Tx, id string) (models.User, error) {
+	var SQL string = "SELECT id, name, email, profile_img FROM users WHERE id = ?"
+	rows, err := tx.QueryContext(ctx, SQL, id)
+	helpers.ErrorWithLog("Failed executing query", err)
+	defer helpers.ErrorCloseRowsDefer(rows)
+
+	user := models.User{}
+
+	if !rows.Next() {
+		return user, errors.New("user not found")
+	}
+
+	err = rows.Scan(&user.Id, &user.Name, &user.Email, &user.Profile)
+	helpers.ErrorWithLog("Failed scanning query", err)
+	return user, nil
+}
