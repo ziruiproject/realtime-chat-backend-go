@@ -1,12 +1,12 @@
 package controllers
 
 import (
+	"github.com/ziruiproject/realtime-chat-backend-go/apps/web/responses"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/services"
-	"github.com/ziruiproject/realtime-chat-backend-go/apps/web"
 )
 
 type UserControllerImpl struct {
@@ -22,7 +22,7 @@ func NewUserController(userService services.UserService) UserController {
 func (controller *UserControllerImpl) GetAll(c *fiber.Ctx) error {
 	log.Println("Masuk Controller")
 	userResponse := controller.UserService.GetAll(c.Context())
-	apiResponse := web.ApiResponse{
+	apiResponse := responses.ApiResponse{
 		Code:   200,
 		Status: "OK",
 		Data:   userResponse,
