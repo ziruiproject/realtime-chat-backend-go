@@ -3,15 +3,17 @@ package services
 import (
 	"context"
 
-	"github.com/ziruiproject/realtime-chat-backend-go/apps/models"
+	"github.com/google/uuid"
 
-	"github.com/ziruiproject/realtime-chat-backend-go/apps/web"
+	"github.com/ziruiproject/realtime-chat-backend-go/apps/web/requests"
+
+	"github.com/ziruiproject/realtime-chat-backend-go/apps/web/responses"
 )
 
 type UserService interface {
-	GetAll(ctx context.Context) []web.UserResponse
-	GetById(ctx context.Context, userId string) web.UserResponse
-	Create(ctx context.Context, user models.User) web.UserResponse
-	Update(ctx context.Context, user models.User) web.UserResponse
-	Delete(ctx context.Context, userId string)
+	GetAll(ctx context.Context) []responses.UserResponse
+	GetById(ctx context.Context, userId uuid.UUID) responses.UserResponse
+	Create(ctx context.Context, request requests.UserCreateRequset) responses.UserResponse
+	Update(ctx context.Context, request requests.UserUpdateRequest, userId uuid.UUID) responses.UserResponse
+	Delete(ctx context.Context, userId uuid.UUID)
 }
