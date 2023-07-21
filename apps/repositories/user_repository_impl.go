@@ -6,6 +6,8 @@ import (
 	"errors"
 	"log"
 
+	"github.com/google/uuid"
+
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/helpers"
 
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/models"
@@ -20,7 +22,7 @@ func NewUserRepository() UserRepository {
 
 func (repository *UserRepositoryImpl) GetAll(ctx context.Context, tx *sql.Tx) []models.User {
 	log.Println("Masuk Repository")
-	var SQL string = "SELECT id, name, email, profile_img FROM users"
+	var SQL string = `SELECT id, name, email, profile_img FROM users`
 	rows, err := tx.QueryContext(ctx, SQL)
 	helpers.ErrorWithLog("Failed retriving users", err)
 	defer helpers.ErrorCloseRowsDefer(rows)
@@ -37,8 +39,8 @@ func (repository *UserRepositoryImpl) GetAll(ctx context.Context, tx *sql.Tx) []
 	return users
 }
 
-func (repository *UserRepositoryImpl) GetById(ctx context.Context, tx *sql.Tx, id string) (models.User, error) {
-	var SQL string = "SELECT id, name, email, profile_img FROM users WHERE id = ?"
+func (repository *UserRepositoryImpl) GetById(ctx context.Context, tx *sql.Tx, id uuid.UUID) (models.User, error) {
+	var SQL string = `SELECT id, name, email, profile_img FROM users WHERE id = ?`
 	rows, err := tx.QueryContext(ctx, SQL, id)
 	helpers.ErrorWithLog("Failed retriving user", err)
 	defer helpers.ErrorCloseRowsDefer(rows)
@@ -54,7 +56,7 @@ func (repository *UserRepositoryImpl) GetById(ctx context.Context, tx *sql.Tx, i
 }
 
 func (repository *UserRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, user models.User) models.User {
-	var SQL string = "INISERT INTO users(id, name, email, password, profile_img) values (?, ?, ?, ?, ?)"
+	var SQL string = `INSERT INTO users(id, name, email, password, profile_img) values (?, ?, ?, ?, ?)`
 	_, err := tx.ExecContext(ctx, SQL, user.Id, user.Name, user.Email, user.Password, user.Profile)
 	helpers.ErrorWithLog("Failed creating user", err)
 
@@ -75,8 +77,8 @@ func (repository *UserRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, us
 	return user
 }
 
-func (repository UserRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, id string) {
-	var SQL string = "DELETE FROM users WHERE id = ?"
+func (repository UserRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, id uuid.UUID) {
+	var SQL string = `DELETE FROM users WHERE id = ?`
 	_, err := tx.ExecContext(ctx, SQL, id)
 	helpers.ErrorWithLog("Failed deleting user", err)
 }
