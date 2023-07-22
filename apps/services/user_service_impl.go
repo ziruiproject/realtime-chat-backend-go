@@ -44,7 +44,7 @@ func (service *UserServiceImpl) GetAll(ctx context.Context) []responses.UserResp
 	return userResponse
 }
 
-func (service *UserServiceImpl) GetById(ctx context.Context, userId string) responses.UserResponse {
+func (service *UserServiceImpl) GetById(ctx context.Context, userId uuid.UUID) responses.UserResponse {
 	tx, err := service.DB.Begin()
 	helpers.ErrorWithLog("Failed to make transaction", err)
 	defer helpers.CommitOrRollback(tx)
@@ -82,5 +82,17 @@ func (service *UserServiceImpl) Update(ctx context.Context, request requests.Use
 	user, err := service.UserRepository.GetById(ctx, tx, userId)
 	helpers.ErrorWithLog("Failed retriving user", err)
 
-	user= 
+	user = models.User{
+		Id:        user.Id,
+		Name:      helpers.IsUpdateRequired(user.Name, request.Name).(string),
+		Email:     helpers.IsUpdateRequired(user.Email, request.Email).(string),
+		Profile:   helpers.IsUpdateRequired(user.Profile, request.Profile).(string),
+		UpdatedAt: time.Now().Unix(),
+	}
+
+	user = service.UserRepository.Update(ctx, tx, user)
+
+	return helpers.ToUserResponse(user)
 }
+
+
