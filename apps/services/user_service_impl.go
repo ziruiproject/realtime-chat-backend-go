@@ -84,9 +84,10 @@ func (service *UserServiceImpl) Update(ctx context.Context, request requests.Use
 
 	user = models.User{
 		Id:        user.Id,
-		Name:      helpers.IsUpdateRequired(user.Name, request.Name).(string),
-		Email:     helpers.IsUpdateRequired(user.Email, request.Email).(string),
-		Profile:   helpers.IsUpdateRequired(user.Profile, request.Profile).(string),
+		Name:      helpers.IsUpdateRequired(request.Name, user.Name).(string),
+		Email:     helpers.IsUpdateRequired(request.Email, user.Email).(string),
+		Profile:   user.Profile,
+		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
 	}
 
@@ -94,5 +95,4 @@ func (service *UserServiceImpl) Update(ctx context.Context, request requests.Use
 
 	return helpers.ToUserResponse(user)
 }
-
 
