@@ -12,8 +12,13 @@ func main() {
 	app := fiber.New()
 	db, err := databases.Connection()
 	helpers.ErrorWithLog("Error when connecting to db: ", err)
-	
+
 	loadController := controllers.SetupController(db)
+
+	app.Use(func(c *fiber.Ctx) error {
+		c.Set("Content-Type", "application/json")
+		return c.Next()
+	})
 
 	routes.SetupRoute(app, loadController)
 	app.Listen(":3000")
