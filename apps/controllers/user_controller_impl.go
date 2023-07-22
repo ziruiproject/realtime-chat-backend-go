@@ -73,3 +73,23 @@ func (controller *UserControllerImpl) Create(c *fiber.Ctx) error {
 
 		return c.JSON(apiResponse)
 }
+
+func (controller *UserControllerImpl) Update(c *fiber.Ctx) error {
+	var requestBody = requests.UserUpdateRequest{}
+	if err := c.BodyParser(&requestBody); err != nil {
+		return err
+	}
+
+	userId, err := uuid.Parse(c.Params("id"))
+	helpers.ErrorWithLog("Failed parsing id", err)
+
+	userResponse := controller.UserService.Update(c.Context(), requestBody, userId)
+
+	apiResponse := responses.ApiResponse{
+		Code:   200,
+		Status: "OK",
+		Data:   userResponse,
+		}
+
+		return c.JSON(apiResponse)
+}
