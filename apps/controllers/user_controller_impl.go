@@ -51,3 +51,25 @@ func (controller *UserControllerImpl) GetById(c *fiber.Ctx) error {
 
 		return c.JSON(apiReesponse)
 }
+
+func (controller *UserControllerImpl) Create(c *fiber.Ctx) error {
+	var requestBody = requests.UserCreateRequset{}
+	log.Println("Masuk controller")
+	err := c.BodyParser(&requestBody)
+	if err != nil {
+		log.Println("Request Body:", string(c.Body()))
+		log.Println(err)
+		return err
+	}
+	log.Println("ini body", requestBody)
+
+	userResponse := controller.UserService.Create(c.Context(), requestBody)
+
+	apiResponse := responses.ApiResponse{
+		Code:   200,
+		Status: "OK",
+		Data:   userResponse,
+		}
+
+		return c.JSON(apiResponse)
+}
