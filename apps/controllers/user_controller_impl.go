@@ -93,3 +93,17 @@ func (controller *UserControllerImpl) Update(c *fiber.Ctx) error {
 
 		return c.JSON(apiResponse)
 }
+
+func (controller *UserControllerImpl) Delete(c *fiber.Ctx) error {
+	userId, err := uuid.Parse(c.Params("id"))
+	helpers.ErrorWithLog("Failed parsing id", err)
+
+	controller.UserService.Delete(c.Context(), userId)
+
+	apiResponse := responses.ApiResponse{
+		Code:   200,
+		Status: "OK",
+		}
+
+		return c.JSON(apiResponse)
+}
