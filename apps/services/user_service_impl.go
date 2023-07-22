@@ -96,3 +96,10 @@ func (service *UserServiceImpl) Update(ctx context.Context, request requests.Use
 	return helpers.ToUserResponse(user)
 }
 
+func (service *UserServiceImpl) Delete(ctx context.Context, id uuid.UUID) {
+	tx, err := service.DB.Begin()
+	helpers.ErrorWithLog("Failed to make transaction", err)
+	defer helpers.CommitOrRollback(tx)
+
+	service.UserRepository.Delete(ctx, tx, id)
+}
