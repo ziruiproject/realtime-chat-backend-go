@@ -15,4 +15,5 @@ type UserRepository interface {
 	Delete(ctx context.Context, tx *sql.Tx, id uuid.UUID)
 	GetById(ctx context.Context, tx *sql.Tx, id uuid.UUID) (models.User, error)
 	GetAll(ctx context.Context, tx *sql.Tx) []models.User
+	GetCredentials(ctx context.Context, tx *sql.Tx, email string) (models.User, error)
 }
