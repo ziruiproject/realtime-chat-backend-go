@@ -87,3 +87,19 @@ func (repository UserRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, id 
 	_, err := tx.ExecContext(ctx, SQL, id)
 	helpers.ErrorWithLog("Failed deleting user", err)
 }
+
+func (repository UserRepositoryImpl) GetCredentials(ctx context.Context, tx *sql.Tx, email string) (models.User, error) {
+	var SQL string = `SELECT id, password, created_at, updated_at FROM users WHERE email = ?`
+	rows, err := tx.QueryContext(ctx, SQL, email)
+	helpers.ErrorWithLog("Failed getting user", err)
+	defer helpers.ErrorCloseRowsDefer(rows)
+
+	var user = models.User{}
+	if !rows.Next() {
+		return user, errors.New("user not found")
+	}
+
+	err = rows.Scan(&user.Id, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	helpers.ErrorWithLog("Failed scanning query", err)
+	return user, nil
+}
