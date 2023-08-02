@@ -55,7 +55,7 @@ func (service *UserServiceImpl) GetById(ctx context.Context, userId uuid.UUID) r
 	return helpers.ToUserResponse(user)
 }
 
-func (service *UserServiceImpl) Create(ctx context.Context, request requests.UserCreateRequset) responses.UserResponse {
+func (service *UserServiceImpl) Create(ctx context.Context, request requests.UserCreateRequest) responses.UserResponse {
 	tx, err := service.DB.Begin()
 	helpers.ErrorWithLog("Failed to make transaction", err)
 	defer helpers.CommitOrRollback(tx)
