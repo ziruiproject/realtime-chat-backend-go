@@ -47,13 +47,13 @@ func (controller *UserControllerImpl) GetById(c *fiber.Ctx) error {
 		Code:   200,
 		Status: "OK",
 		Data:   userResponse,
-		}
+	}
 
-		return c.JSON(apiReesponse)
+	return c.JSON(apiReesponse)
 }
 
 func (controller *UserControllerImpl) Create(c *fiber.Ctx) error {
-	var requestBody = requests.UserCreateRequset{}
+	var requestBody = requests.UserCreateRequest{}
 	log.Println("Masuk controller")
 	err := c.BodyParser(&requestBody)
 	if err != nil {
@@ -69,9 +69,9 @@ func (controller *UserControllerImpl) Create(c *fiber.Ctx) error {
 		Code:   200,
 		Status: "OK",
 		Data:   userResponse,
-		}
+	}
 
-		return c.JSON(apiResponse)
+	return c.JSON(apiResponse)
 }
 
 func (controller *UserControllerImpl) Update(c *fiber.Ctx) error {
@@ -89,9 +89,9 @@ func (controller *UserControllerImpl) Update(c *fiber.Ctx) error {
 		Code:   200,
 		Status: "OK",
 		Data:   userResponse,
-		}
+	}
 
-		return c.JSON(apiResponse)
+	return c.JSON(apiResponse)
 }
 
 func (controller *UserControllerImpl) Delete(c *fiber.Ctx) error {
@@ -103,7 +103,7 @@ func (controller *UserControllerImpl) Delete(c *fiber.Ctx) error {
 	apiResponse := responses.ApiResponse{
 		Code:   200,
 		Status: "OK",
-		}
+	}
 
-		return c.JSON(apiResponse)
+	return c.JSON(apiResponse)
 }
