@@ -6,19 +6,19 @@ import (
 	"log"
 
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/helpers"
-
+	"github.com/ziruiproject/realtime-chat-backend-go/apps/configuration"
 	_ "github.com/lib/pq"
 	_ "github.com/ziruiproject/realtime-chat-backend-go/apps/helpers"
 )
 
 func Connection() (*sql.DB, error) {
-	helpers.LoadEnv()
+
 	dbData := map[string]string{
-		"host": helpers.GetEnv("HOST"),
-		"port": helpers.GetEnv("PORT"),
-		"user": helpers.GetEnv("DB_USERNAME"),
-		"name": helpers.GetEnv("DB_NAME"),
-		"pass": helpers.GetEnv("DB_PASSWORD"),
+		"host": configuration.EnvConfigs.DBHost,
+		"port": configuration.EnvConfigs.DBPort,
+		"user": configuration.EnvConfigs.DBUsername,
+		"name": configuration.EnvConfigs.DBName,
+		"pass": configuration.EnvConfigs.DBPassword,
 	}
 
 	dbconn := fmt.Sprintf(
@@ -30,6 +30,7 @@ func Connection() (*sql.DB, error) {
 	helpers.ErrorWithLog("Failed to connecting to database", err)
 	
 	log.Println("Connected to PostreSQL database")
+	log.Println(configuration.EnvConfigs.DBHost)
 
 	return db, nil
 }
