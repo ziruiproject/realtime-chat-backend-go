@@ -40,7 +40,7 @@ func (repository *UserRepositoryImpl) GetAll(ctx context.Context, tx *sql.Tx) []
 }
 
 func (repository *UserRepositoryImpl) GetById(ctx context.Context, tx *sql.Tx, id uuid.UUID) (models.User, error) {
-	var SQL string = "SELECT id, name, email, profile_img, created_at, updated_at FROM users WHERE id = $1"
+	var SQL = "SELECT id, name, email, profile_img, created_at, updated_at FROM users WHERE id = $1"
 	rows, err := tx.QueryContext(ctx, SQL, id)
 	helpers.ErrorWithLog("Failed retriving user", err)
 	defer helpers.ErrorCloseRowsDefer(rows)
