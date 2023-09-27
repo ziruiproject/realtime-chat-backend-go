@@ -1,11 +1,7 @@
 package controllers
 
 import (
-	"log"
-
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/web/requests"
-
-	"github.com/ziruiproject/realtime-chat-backend-go/apps/helpers"
 
 	"github.com/google/uuid"
 
@@ -27,15 +23,26 @@ func NewUserController(userService services.UserService) UserController {
 }
 
 func (controller *UserControllerImpl) GetAll(c *fiber.Ctx) error {
-	log.Println("Masuk Controller")
+	var apiResponse responses.ApiResponse
 	userResponse := controller.UserService.GetAll(c.Context())
-	apiResponse := responses.ApiResponse{
+
+	if len(userResponse) == 0 {
+		apiResponse = responses.ApiResponse{
+			Code: 404,
+			Status: "Users Not Found",
+			Data: "",
+		}
+
+		return c.Status(404).JSON(apiResponse)
+	}
+
+	apiResponse = responses.ApiResponse{
 		Code:   200,
 		Status: "OK",
 		Data:   userResponse,
 	}
 
-	return c.JSON(apiResponse)
+	return c.Status(200).JSON(apiResponse)
 }
 
 func (controller *UserControllerImpl) GetById(c *fiber.Ctx) error {
@@ -43,7 +50,7 @@ func (controller *UserControllerImpl) GetById(c *fiber.Ctx) error {
 
 	var apiResponse responses.ApiResponse
 
-//	Check if if requested valid
+//	Check if id requested valid
 	if err != nil {
 		apiResponse = responses.ApiResponse{
 			Code: 400,
@@ -76,57 +83,82 @@ func (controller *UserControllerImpl) GetById(c *fiber.Ctx) error {
 }
 
 func (controller *UserControllerImpl) Create(c *fiber.Ctx) error {
+	var apiResponse responses.ApiResponse
 	var requestBody = requests.UserCreateRequest{}
-	log.Println("Masuk controller")
 	err := c.BodyParser(&requestBody)
+
 	if err != nil {
-		log.Println("Request Body:", string(c.Body()))
-		log.Println(err)
-		return err
+		apiResponse = responses.ApiResponse{
+			Code: 500,
+			Status: "Internal Server Error",
+			Data: "",
+		}
+		return c.Status(500).JSON(apiResponse)
 	}
-	log.Println("ini body", requestBody)
 
 	userResponse := controller.UserService.Create(c.Context(), requestBody)
 
-	apiResponse := responses.ApiResponse{
+	apiResponse = responses.ApiResponse{
 		Code:   200,
 		Status: "OK",
 		Data:   userResponse,
 	}
 
-	return c.JSON(apiResponse)
+	return c.Status(200).JSON(apiResponse)
 }
 
 func (controller *UserControllerImpl) Update(c *fiber.Ctx) error {
+	var apiResponse responses.ApiResponse
 	var requestBody = requests.UserUpdateRequest{}
+
 	if err := c.BodyParser(&requestBody); err != nil {
-		return err
+		apiResponse = responses.ApiResponse{
+			Code: 500,
+			Status: "Internal Server Error",
+			Data: "",
+		}
+		return c.Status(500).JSON(apiResponse)
 	}
 
 	userId, err := uuid.Parse(c.Params("id"))
-	helpers.ErrorWithLog("Failed parsing id", err)
+	if err != nil {
+		apiResponse = responses.ApiResponse{
+			Code: 400,
+			Status: "Bad Request",
+			Data: "",
+		}
+		return c.Status(400).JSON(apiResponse)
+	}
 
 	userResponse := controller.UserService.Update(c.Context(), requestBody, userId)
 
-	apiResponse := responses.ApiResponse{
+	apiResponse = responses.ApiResponse{
 		Code:   200,
 		Status: "OK",
 		Data:   userResponse,
 	}
 
-	return c.JSON(apiResponse)
+	return c.Status(200).JSON(apiResponse)
 }
 
 func (controller *UserControllerImpl) Delete(c *fiber.Ctx) error {
+	var apiResponse responses.ApiResponse;
 	userId, err := uuid.Parse(c.Params("id"))
-	helpers.ErrorWithLog("Failed parsing id", err)
+	if err != nil {
+		apiResponse = responses.ApiResponse{
+			Code: 400,
+			Status: "Bad Request",
+			Data: "",
+		}
+		return c.Status(400).JSON(apiResponse)
+	}
 
 	controller.UserService.Delete(c.Context(), userId)
 
-	apiResponse := responses.ApiResponse{
+	apiResponse = responses.ApiResponse{
 		Code:   200,
 		Status: "OK",
 	}
 
-	return c.JSON(apiResponse)
+	return c.Status(200).JSON(apiResponse)
 }
