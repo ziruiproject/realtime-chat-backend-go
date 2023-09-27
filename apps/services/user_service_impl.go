@@ -50,7 +50,8 @@ func (service *UserServiceImpl) GetById(ctx context.Context, userId uuid.UUID) r
 	defer helpers.CommitOrRollback(tx)
 
 	user, err := service.UserRepository.GetById(ctx, tx, userId)
-	helpers.ErrorWithLog("Failed retrivign user", err)
+
+//	helpers.ErrorWithLog("Failed etrieving user", err)
 
 	return helpers.ToUserResponse(user)
 }
