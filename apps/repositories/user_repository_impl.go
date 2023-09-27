@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"log"
 
 	"github.com/google/uuid"
 
@@ -21,8 +20,7 @@ func NewUserRepository() UserRepository {
 }
 
 func (repository *UserRepositoryImpl) GetAll(ctx context.Context, tx *sql.Tx) []models.User {
-	log.Println("Masuk Repository")
-	var SQL string = `SELECT id, name, email, profile_img FROM users`
+	var SQL string = `SELECT id, name, email, profile_img, created_at, updated_at FROM users`
 	rows, err := tx.QueryContext(ctx, SQL)
 	helpers.ErrorWithLog("Failed retriving users", err)
 	defer helpers.ErrorCloseRowsDefer(rows)
@@ -30,7 +28,7 @@ func (repository *UserRepositoryImpl) GetAll(ctx context.Context, tx *sql.Tx) []
 	var users []models.User
 	for rows.Next() {
 		user := models.User{}
-		err := rows.Scan(&user.Id, &user.Name, &user.Email, &user.Profile)
+		err := rows.Scan(&user.Id, &user.Name, &user.Email, &user.Profile, &user.CreatedAt, &user.UpdatedAt)
 		helpers.ErrorWithLog("Failed scanning query", err)
 
 		users = append(users, user)
@@ -56,12 +54,6 @@ func (repository *UserRepositoryImpl) GetById(ctx context.Context, tx *sql.Tx, i
 }
 
 func (repository *UserRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, user models.User) models.User {
-	log.Println("id", user.Id)
-	log.Println("name", user.Name)
-	log.Println("email", user.Email)
-	log.Println("pass", user.Password)
-	log.Println("create", user.CreatedAt)
-	log.Println("update", user.UpdatedAt)
 	var SQL string = "INSERT INTO users(id,name,email,password,created_at,updated_at) values($1, $2, $3, $4, $5, $6)"
 	_, err := tx.ExecContext(ctx, SQL, user.Id, user.Name, user.Email, user.Password, user.CreatedAt, user.UpdatedAt)
 	helpers.ErrorWithLog("Failed creating user", err)
