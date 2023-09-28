@@ -5,11 +5,13 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	configs "github.com/ziruiproject/realtime-chat-backend-go/apps/configuration"
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/web/responses"
+	"log"
 )
 
 func AuthMiddleware(c *fiber.Ctx) error {
 //	GET AUTH HEADER
 	authHeader := c.Get("X-AUTH-HEADER")
+	
 
 	if authHeader == "" {
 		return c.Status(401).JSON(responses.ApiResponse{
@@ -21,7 +23,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 //	PARSE TOKEN
 	token, err := jwt.Parse(authHeader, func(token *jwt.Token) (interface{}, error) {
-		return configs.EnvConfigs.SecretToken, nil
+		return []byte(configs.EnvConfigs.SecretToken), nil
 	})
 
 //	CHECK IF ERROR PARSING TOKEN
