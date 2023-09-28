@@ -22,6 +22,13 @@ type AuthServiceImpl struct {
 	DB             *sql.DB
 }
 
+func NewAuthService(UserRepository repositories.UserRepository, db *sql.DB) AuthService {
+	return &AuthServiceImpl{
+		UserRepository: UserRepository,
+		DB: db,
+	}
+}
+
 func (service *AuthServiceImpl) Login(ctx context.Context, request requests.UserLoginRequest) responses.AuthResponse {
 	tx, err := service.DB.Begin()
 	helpers.ErrorWithLog("Failed to make the transaction: ", err)
@@ -44,7 +51,8 @@ func (service *AuthServiceImpl) Login(ctx context.Context, request requests.User
 	claims["user_id"] = user.Id
 	claims["exp"] = time.Now().Add(time.Hour * 48).Unix()
 
-	tokenString, err := token.SignedString(configs.EnvConfigs.SecretToken)
+
+	tokenString, err := token.SignedString([]byte(configs.EnvConfigs.SecretToken))
 	helpers.ErrorWithLog("Failed generating token", err)
 
 	return responses.AuthResponse{
