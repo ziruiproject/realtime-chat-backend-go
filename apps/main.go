@@ -24,7 +24,7 @@ func main() {
 		return c.Next()
 	})
 
-	app.Use("/users", middlewares.AuthMiddleware)
+	app.Use("/users/:id", middlewares.AuthMiddleware)
 
 	routes.SetupRoute(app, loadController)
 	app.Listen(":3000")
