@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"database/sql"
+	configs "github.com/ziruiproject/realtime-chat-backend-go/apps/configuration"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -22,7 +23,6 @@ type AuthServiceImpl struct {
 }
 
 func (service *AuthServiceImpl) Login(ctx context.Context, request requests.UserLoginRequest) responses.AuthResponse {
-	helpers.LoadEnv()
 	tx, err := service.DB.Begin()
 	helpers.ErrorWithLog("Failed to make the transaction: ", err)
 	defer helpers.CommitOrRollback(tx)
@@ -44,7 +44,7 @@ func (service *AuthServiceImpl) Login(ctx context.Context, request requests.User
 	claims["user_id"] = user.Id
 	claims["exp"] = time.Now().Add(time.Hour * 48).Unix()
 
-	tokenString, err := token.SignedString(helpers.GetEnv("JWT_SECRET"))
+	tokenString, err := token.SignedString(configs.EnvConfigs.SecretToken)
 	helpers.ErrorWithLog("Failed generating token", err)
 
 	return responses.AuthResponse{
