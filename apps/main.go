@@ -5,7 +5,7 @@ import (
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/controllers"
 	"github.com/ziruiproject/realtime-chat-backend-go/apps/helpers"
 	"github.com/ziruiproject/realtime-chat-backend-go/databases"
-	//	"github.com/ziruiproject/realtime-chat-backend-go/middlewares"
+	"github.com/ziruiproject/realtime-chat-backend-go/middlewares"
 	"github.com/ziruiproject/realtime-chat-backend-go/routes"
 )
 
@@ -24,7 +24,7 @@ func main() {
 		return c.Next()
 	})
 
-//	app.Use("/users", middlewares.AuthMiddleware)
+	app.Use("/users", middlewares.AuthMiddleware)
 
 	routes.SetupRoute(app, loadController)
 	app.Listen(":3000")
