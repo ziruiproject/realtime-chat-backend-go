@@ -21,4 +21,7 @@ func SetupRoute(app *fiber.App, controller *controllers.Controllers) {
 	app.Delete("/users/:id", func(c *fiber.Ctx) error {
 		return controller.UserController.Delete(c)
 	})
+	app.Post("/login", func(c *fiber.Ctx) error {
+		return controller.AuthController.Login(c)
+	})
 }
