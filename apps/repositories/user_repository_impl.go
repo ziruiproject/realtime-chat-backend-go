@@ -38,7 +38,7 @@ func (repository *UserRepositoryImpl) GetAll(ctx context.Context, tx *sql.Tx) []
 }
 
 func (repository *UserRepositoryImpl) GetById(ctx context.Context, tx *sql.Tx, id uuid.UUID) (models.User, error) {
-	var SQL = "SELECT id, name, email, profile_img, created_at, updated_at FROM users WHERE id = $1"
+	var SQL string = `SELECT id, name, email, profile_img, created_at, updated_at FROM users WHERE id = $1`
 	rows, err := tx.QueryContext(ctx, SQL, id)
 	helpers.ErrorWithLog("Failed retriving user", err)
 	defer helpers.ErrorCloseRowsDefer(rows)
@@ -55,7 +55,12 @@ func (repository *UserRepositoryImpl) GetById(ctx context.Context, tx *sql.Tx, i
 
 func (repository *UserRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, user models.User) models.User {
 	var SQL string = "INSERT INTO users(id,name,email,password,created_at,updated_at) values($1, $2, $3, $4, $5, $6)"
-	_, err := tx.ExecContext(ctx, SQL, user.Id, user.Name, user.Email, user.Password, user.CreatedAt, user.UpdatedAt)
+
+//	Hash Password
+	newPassword, err := helpers.HashPassword(user.Password)
+	helpers.ErrorWithLog("Failed creating user", err)
+
+	_, err = tx.ExecContext(ctx, SQL, user.Id, user.Name, user.Email, newPassword, user.CreatedAt, user.UpdatedAt)
 	helpers.ErrorWithLog("Failed creating user", err)
 
 	return user
@@ -63,25 +68,26 @@ func (repository *UserRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, user
 
 func (repository *UserRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, user models.User) models.User {
 	var SQL string = `UPDATE users SET
-		email = $1,
-		name = $2,
-		created_at = $3,
-		updated_at = $4
-		WHERE id::text = $5;`
+			email = $1,
+			name = $2,
+			created_at = $3,
+			updated_at = $4
+			WHERE id::text = $5;`
+
 	_, err := tx.QueryContext(ctx, SQL, user.Email, user.Name, user.CreatedAt, user.UpdatedAt, user.Id)
 	helpers.ErrorWithLog("Failed updating user", err)
 
 	return user
 }
 
-func (repository UserRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, id uuid.UUID) {
+func (repository *UserRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, id uuid.UUID) {
 	var SQL string = `DELETE FROM users WHERE id = $1`
 	_, err := tx.ExecContext(ctx, SQL, id)
 	helpers.ErrorWithLog("Failed deleting user", err)
 }
 
-func (repository UserRepositoryImpl) GetCredentials(ctx context.Context, tx *sql.Tx, email string) (models.User, error) {
-	var SQL string = `SELECT id, password, created_at, updated_at FROM users WHERE email = ?`
+func (repository *UserRepositoryImpl) GetCredentials(ctx context.Context, tx *sql.Tx, email string) (models.User, error) {
+	var SQL string = `SELECT id, password, created_at, updated_at FROM users WHERE email = $1`
 	rows, err := tx.QueryContext(ctx, SQL, email)
 	helpers.ErrorWithLog("Failed getting user", err)
 	defer helpers.ErrorCloseRowsDefer(rows)
